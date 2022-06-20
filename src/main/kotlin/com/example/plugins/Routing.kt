@@ -21,8 +21,8 @@ import java.util.Base64
 fun Application.configureRouting() {
 
     val RSA_PUBLIC_KEY_STR = """-----BEGIN PUBLIC KEY-----
-    removed!!
-    -----END PUBLIC KEY-----""".trimIndent()
+
+-----END PUBLIC KEY-----"""
 
     val keyFactory = KeyFactory.getInstance("RSA")
 
@@ -38,14 +38,14 @@ fun Application.configureRouting() {
     // Starting point for a Ktor app:
     routing {
         post("/validatesignature") {
-            val jsonPayloadStr = call.receive<JsonNode>().toString()
+            val jsonPayloadStr = call.receive<String>()
             val xJwsSignature = call.request.header("x-jws-signature")
 
             println("jsonPayloadStr : " + jsonPayloadStr)
             println("xJwsSignature : " + xJwsSignature)
 
             val jwsObject = JWSObject.parse(xJwsSignature, Payload(jsonPayloadStr))
-
+            println("JWEOBJECT: " + jwsObject.toString())
             val verifier = RSASSAVerifier(RSA_PUBLIC_KEY as RSAPublicKey)
 
             // when
